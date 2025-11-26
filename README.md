@@ -19,7 +19,6 @@ This repo can be used as a recommendation for guidance on setting up observabili
         * Resource recommendation of Linux VM 4 core 16GB 100 GB storage 
     * Ensure, docker and docker-compose is installed on Linux VM. Run `docker version` to confirm the same.
     * Start docker using `systemctl start docker`
-    * Add the user `loki` using `useradd` command if you intent to make loki write logs on local store as the `/home/loki` directory would be volume mounted into the loki container.
 * Clone the repo on Linux VM OR download to your local,zip the entire repo and transfer it to VM.
 * Login to VM
 * Go to directory where repo is cloned or unzip it if zipped.
