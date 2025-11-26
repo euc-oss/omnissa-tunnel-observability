@@ -1,0 +1,53 @@
+-- **********************************************************
+-- Copyright 2024 Omnissa, LLC.  All rights reserved.
+-- **********************************************************
+
+OMNISSA-HORIZONV2-AGENTCAP-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY
+       FROM SNMPv2-SMI
+    omnissaAgentCapabilities
+       FROM OMNISSA-ROOT-MIB
+    AGENT-CAPABILITIES
+       FROM SNMPv2-CONF;
+
+onsHorizonv2AgentCapabilityMIB MODULE-IDENTITY
+   LAST-UPDATED "202411180000Z"
+   ORGANIZATION "Omnissa, Inc"
+   CONTACT-INFO
+      "Omnissa, LLC
+      590 E Middlefield Road
+      Mountain View, CA 94043
+      Tel: 1-650-239-7600
+      "
+   DESCRIPTION
+     "This module defines agent capabilities for deployed
+      Horizon v2 agents by release."
+
+  REVISION     "202411180000Z"
+   DESCRIPTION
+     "Notifications sent by Horizon v2 as updated in 2.0 release"
+        ::= { omnissaAgentCapabilities 150 }
+
+onsHorizonv2Capability OBJECT IDENTIFIER ::= { onsHorizonv2AgentCapabilityMIB 0 }
+
+onsHorizonv2Agent2021v200 AGENT-CAPABILITIES
+  PRODUCT-RELEASE
+     "2.0.0"
+  STATUS  current
+  DESCRIPTION
+     "Release 2.1.0.0 for Omnissa Horizon v2 supporting
+     only SNMPv3 trap PDUs. It describes all the notifications
+     sent from the Horizon v2 appliance.
+     "
+  REFERENCE
+     "http://www.omnissa.com/products"
+     -- REVISION 202307280000Z First Version.
+     SUPPORTS OMNISSA-HORIZONV2-EVENT-MIB
+     INCLUDES {
+         onsHorizonv2NotificationGroup
+     }
+   ::= { onsHorizonv2Capability 5 }
+
+END

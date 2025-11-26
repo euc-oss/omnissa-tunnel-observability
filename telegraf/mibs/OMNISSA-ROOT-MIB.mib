@@ -1,0 +1,117 @@
+OMNISSA-ROOT-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+     MODULE-IDENTITY, OBJECT-IDENTITY, enterprises
+        FROM SNMPv2-SMI;
+
+omnissa MODULE-IDENTITY
+       LAST-UPDATED "202410300000Z"
+       ORGANIZATION "Omnissa, LLC"
+       CONTACT-INFO
+               "Omnissa, LLC
+                590 E Middlefield Road
+                Mountain View, CA 94043
+                Tel: 1-650-239-7600
+                Web: https://kb.omnissa.com/s/article/1013445
+               "
+       DESCRIPTION
+               "Omnissa managed object root assignements
+                This module defines the Omnissa SNMP MIB root
+                and its primary subtrees.
+               "
+       REVISION      "202410300000Z"
+       DESCRIPTION
+               "The initial revision. Prior version was released 
+                as VMWARE-ROOT-MIB."
+       ::= { enterprises 61715 }
+  
+
+-- The parent oid of snmpv1 traps when sent in snmpv2/v3
+-- omnissaNotifications OBJECT IDENTIFIER ::= { omnissa 0 }
+omnissaNotifications OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "Parent of all notifications (traps, informs)."
+ ::= { omnissa 0 }
+
+omnissaSystem OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "Parent of all managed objects relating to system software identification."
+::= { omnissa 1 }
+
+omnissaVirtMachines OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "Parent of all managed objects relating to virtual machine inventory."
+::= { omnissa 2 }
+
+omnissaResources OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "Parent of all managed objects relating to resource utilization."
+::= { omnissa 3 }
+
+omnissaProductSpecific OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "parent of objects specific to a given hardware/software product."
+::= { omnissa 4 }
+
+omnissaLdap OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "Omnissa specific LDAP schema definitions."
+::= { omnissa 40 }
+
+omnissaTraps OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "Managed objects defined under this node are only visible in
+     notifications varbind lists and can not be polled."
+::= { omnissa 50 }
+
+omnissaAgentCapabilities OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "All agent capabilities defnitions occur under this."
+::= { omnissa 70 }
+
+omnissaPerAppTunnel OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "Objects used by Omnissa PerApp Tunnel and related components."
+::= { omnissa 130 }
+
+omnissaHzecc OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "Objects used by Omnissa Horizon Cloud Connector and related components."
+::= { omnissa 140 }
+
+omnissaHorizonv2 OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "Objects used by Omnissa Horizon v2 and related components."
+::= { omnissa 150 }
+
+omnissaExperimental OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "Used for product testing and development."
+::= { omnissa 700 }
+
+omnissaDocumentation OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "Used in product documentation, examples."
+::= { omnissa 750 }
+
+omnissaObsolete OBJECT-IDENTITY
+STATUS  current
+DESCRIPTION
+    "Conformance, meta SMI oids for Obsolete smi assignements done under this arc."
+::= { omnissa 800 }
+
+END
+

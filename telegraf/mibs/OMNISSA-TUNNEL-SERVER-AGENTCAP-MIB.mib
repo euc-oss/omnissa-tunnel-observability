@@ -1,0 +1,72 @@
+-- **********************************************************
+-- Copyright (c) Omnissa, LLC. All rights reserved.
+-- **********************************************************
+
+OMN-TUNNEL-SERVER-AGENTCAP-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY
+        FROM SNMPv2-SMI
+    omnissaAgentCapabilities
+        FROM OMNISSA-ROOT-MIB
+    AGENT-CAPABILITIES
+        FROM  SNMPv2-CONF;
+
+
+omnTunnelServerAgentCapMIB MODULE-IDENTITY
+    LAST-UPDATED "202412010000Z"
+    ORGANIZATION "Omnissa, LLC"
+    CONTACT-INFO
+        "Omnissa, LLC
+        590 E Middlefield Road
+        Mountain View, CA 94043
+        Tel: 1-650-239-7600
+        Web: https://kb.omnissa.com/s/article/1013445
+        "
+    DESCRIPTION
+        "This module defines agent capabilities for deployed
+         Omnissa Workspace ONE Tunnel Server by release."
+
+    REVISION     "202412010000Z"
+    DESCRIPTION
+        "Revised OID names to match Omnissa prefix"
+
+    REVISION     "202410300000Z"
+    DESCRIPTION
+        "Capabilities for Omnissa Tunnel Server 24.12.00 release."
+        ::= { omnissaAgentCapabilities 28 }
+
+omnTunnelServerCapability OBJECT IDENTIFIER ::=
+    { omnTunnelServerAgentCapMIB 1 }
+
+
+--
+-- Applies to 22.12.00 Release
+--
+
+
+omnTunnelServer2024-241200 AGENT-CAPABILITIES
+    PRODUCT-RELEASE
+        "24.12.00"
+    STATUS  current
+    DESCRIPTION
+        "Release 24.12.00 for Omnissa Workspace ONE Tunnel Server
+         supporting tunnel statistic and information queries.
+        "
+    REFERENCE
+        "https://www.omnissa.com/products/#workspace-one"
+    SUPPORTS OMN-TUNNEL-SERVER-MIB    -- REVISION 202410300000Z
+
+    INCLUDES {
+        omnTunnelServerInfoGroup,
+        omnTunnelServerInfoGroup2,
+        omnTunnelServerInfoGroup3,
+        omnTunnelServerStatGroup,
+        omnTunnelServerStatGroup2,
+        omnTunnelServerStatGroup3,
+        omnTunnelServerStatGroup4
+    }
+    ::= { omnTunnelServerCapability 4 }
+END
+
+

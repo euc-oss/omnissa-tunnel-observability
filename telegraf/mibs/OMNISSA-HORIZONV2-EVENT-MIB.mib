@@ -1,0 +1,106 @@
+OMNISSA-HORIZONV2-EVENT-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+   MODULE-IDENTITY, OBJECT-TYPE, NOTIFICATION-TYPE
+        FROM SNMPv2-SMI
+   MODULE-COMPLIANCE, OBJECT-GROUP, NOTIFICATION-GROUP
+        FROM SNMPv2-CONF
+   SnmpAdminString
+        FROM SNMP-FRAMEWORK-MIB
+   omnissaHorizonv2
+       FROM OMNISSA-ROOT-MIB;
+    omnissaHorizonv2MIB MODULE-IDENTITY
+    LAST-UPDATED "202411180000Z"
+    ORGANIZATION "Omnissa, Inc."
+    CONTACT-INFO
+        "Omnissa, LLC
+        590 E Middlefield Road
+        Mountain View, CA 94043
+        Tel: 1-650-239-7600
+        "
+    DESCRIPTION
+        "This MIB file contains the definition of the SNMP
+        interface of Omnissa Horizon Edge Gateway.
+        Horizon Edge Gateway is an important product which
+        enables subscription license for Horizon Edges .
+        For more information about Horizon Edge Gateway (Horizon V2), please see
+        the latest documentation of Horizon Edge Gateway"
+    REVISION     "202411180000Z"
+    DESCRIPTION
+        "Initial revision"
+    ::= { omnissaHorizonv2 1 }
+onsHorizonv2Notifications OBJECT IDENTIFIER ::= { omnissaHorizonv2 0 }
+onsHorizonv2LicenseEvents OBJECT IDENTIFIER ::= { omnissaHorizonv2 5 }
+--
+-- Object Types
+--
+onsHorizonv2LicenseFailureStatus OBJECT-TYPE
+   SYNTAX SnmpAdminString
+   MAX-ACCESS accessible-for-notify
+   STATUS      current
+   DESCRIPTION
+   "License push status.
+   This trap is sent when a license push fails.
+   License is pushed every 24 hours
+   from Horizon Cloud Control Plane to Horizon on-prem.
+
+   This trap indicates that the license sync failed due to the
+   mentioned error code. If you received this event for
+   more than one day in a row, please navigate to
+   Horizon Admin Console and check for connectivity.
+
+   In case issue doesn't resolve after following troubleshooting
+   steps mentioned in KB article, please reach to Omnissa support.
+   "
+   ::= { onsHorizonv2LicenseEvents 1 }
+--
+-- Notifications Objects
+--
+onsHorizonv2LicenseEventTrap NOTIFICATION-TYPE
+    OBJECTS {
+                onsHorizonv2LicenseFailureStatus
+            }
+    STATUS      current
+    DESCRIPTION
+        "This trap is sent when a license push fails.
+        License push occurs every 24 hours from
+        Horizon Cloud Control Plane to Horizon on-prem.
+
+        This trap indicates that the license push failed due to the
+        mentioned error code. If you received this event for
+        more than one day in a row, please navigate to
+        Horizon Admin Console and check for connectivity.
+        Frequency: This event is sent when the license push fails.
+                   After that once every 24 hrs until the issue is resolved
+        In case issue doesn't resolve after following troubleshooting
+        steps mentioned in KB article, please reach to Omnissa support
+        "
+    ::= { onsHorizonv2Notifications 2 }
+-- conformance information
+onsHorizonv2MIBConformance OBJECT IDENTIFIER ::= { omnissaHorizonv2MIB 1 }
+onsHorizonv2MIBCompliances OBJECT IDENTIFIER ::= { onsHorizonv2MIBConformance 1 }
+onsHorizonv2MIBGroups OBJECT IDENTIFIER ::= { onsHorizonv2MIBConformance 2 }
+onsHorizonv2MIBBasicCompliance MODULE-COMPLIANCE
+    STATUS     current
+    DESCRIPTION
+    "The compliance statement for entities which implement OMNISSA-HORIZONV2-EVENT-MIB."
+    MODULE -- this module
+    MANDATORY-GROUPS { onsHorizonv2NotificationGroup, onsHorizonv2ObjectGroup }
+    ::= { onsHorizonv2MIBCompliances 1 }
+onsHorizonv2ObjectGroup OBJECT-GROUP
+    OBJECTS {
+        onsHorizonv2LicenseFailureStatus
+    }
+    STATUS current
+    DESCRIPTION
+    "These objects provide notification details."
+    ::= { onsHorizonv2MIBGroups 1 }
+onsHorizonv2NotificationGroup NOTIFICATION-GROUP
+    NOTIFICATIONS {
+        onsHorizonv2LicenseEventTrap
+    }
+    STATUS current
+    DESCRIPTION
+    "Group of objects describing notifications."
+    ::= { onsHorizonv2MIBGroups 2 }
+END

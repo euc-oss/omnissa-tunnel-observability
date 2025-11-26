@@ -1,0 +1,51 @@
+OMNISSA-HZECC-AGENTCAP-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY
+       FROM SNMPv2-SMI
+    omnissaAgentCapabilities
+       FROM OMNISSA-ROOT-MIB
+    AGENT-CAPABILITIES
+       FROM SNMPv2-CONF;
+
+onsHzeccAgentCapabilityMIB MODULE-IDENTITY
+   LAST-UPDATED "202411180000Z"
+   ORGANIZATION "Omnissa, Inc"
+   CONTACT-INFO
+      "Omnissa, LLC
+      590 E Middlefield Road
+      Mountain View, CA 94043
+      Tel: 1-650-239-7600
+      "
+   DESCRIPTION
+     "This module defines agent capabilities for deployed
+      Horizon Cloud Connector (Hze CC) agents by release.
+      Releases of Horizon Cloud Connector (Hze CC)
+      prior to 2.0 are not supported."
+
+  REVISION     "202411180000Z"
+   DESCRIPTION
+     "Notifications sent by Hze CC as updated in 2.0 release"
+        ::= { omnissaAgentCapabilities 140 }
+
+onsHzeccCapability OBJECT IDENTIFIER ::= { onsHzeccAgentCapabilityMIB 1 }
+
+onsHZECCAgent2021v200 AGENT-CAPABILITIES
+  PRODUCT-RELEASE
+     "2.0.0"
+  STATUS  current
+  DESCRIPTION
+     "Release 2.1.0.0 for Omnissa Horizon Cloud Connector supporting
+     only SNMPv3 trap PDUs. It describes all the notifications
+     sent from the Hzee CC appliance.
+     "
+  REFERENCE
+     "http://www.ons.com/products"
+     -- REVISION 202105170000Z First Version.
+     SUPPORTS OMNISSA-HZECC-EVENT-MIB
+     INCLUDES {
+         onsHzeccNotificationGroup
+     }
+   ::= { onsHzeccCapability 4 }
+
+END

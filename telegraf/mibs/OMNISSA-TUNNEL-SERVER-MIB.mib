@@ -1,0 +1,875 @@
+-- **********************************************************
+-- Copyright (c) Omnissa, LLC. All rights reserved.
+-- **********************************************************
+
+OMN-TUNNEL-SERVER-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+
+    OBJECT-TYPE, Unsigned32, Gauge32, Counter64, MODULE-IDENTITY
+        FROM SNMPv2-SMI
+    MODULE-COMPLIANCE, OBJECT-GROUP
+        FROM SNMPv2-CONF
+    TEXTUAL-CONVENTION, DateAndTime, TruthValue
+        FROM SNMPv2-TC
+    omnissaPerAppTunnel
+        FROM OMNISSA-ROOT-MIB
+    SnmpAdminString
+        FROM SNMP-FRAMEWORK-MIB;
+
+
+omnTunnelServerMIB MODULE-IDENTITY
+    LAST-UPDATED "202412010000Z"
+    ORGANIZATION "Omnissa, LLC"
+    CONTACT-INFO
+        "Omnissa, LLC
+        590 E Middlefield Road
+        Mountain View, CA 94043
+        Tel: 1-650-239-7600
+        Web: https://kb.omnissa.com/s/article/1013445
+        "
+    DESCRIPTION
+        "This MIB file contains the definition of the SNMP
+        interface of Omnissa Workspace ONE Tunnel Server.
+
+        Workspace ONE Tunnel is part of Workspace ONE by Omnissa:
+        https://www.omnissa.com/products/#workspace-one
+
+        For more information about Workspace ONE Tunnel, please see
+        the latest documentation of Omnissa Workspace ONE UEM:
+        https://docs.omnissa.com/category/Workspace_ONE_UEM
+        "
+
+    REVISION     "202412010000Z"
+    DESCRIPTION
+        "Revised OID names to match Omnissa prefix"
+
+    REVISION     "202410300000Z"
+    DESCRIPTION
+        "The initial revision. Prior version was released 
+         as VMWARE-TUNNEL-SERVER-MIB."
+
+    ::= { omnissaPerAppTunnel 1 }
+
+
+omnTunnelServerStat OBJECT IDENTIFIER ::= { omnTunnelServerMIB 1 }
+omnTunnelServerInfo OBJECT IDENTIFIER ::= { omnTunnelServerMIB 2 }
+
+
+--
+-- Textual-Conventions
+--
+
+    
+OmnTunnelUpDownState ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION
+        "Can hold one of the following values: 1 = up or 2 = down."
+    SYNTAX  INTEGER { up(1), down(2) }
+
+OmnTunnelCascadeModeState ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION
+        "Can hold one of the following values:
+         1 = off, 2 = frontend or 3 = backend."
+    SYNTAX  INTEGER { off(1), frontend(2), backend(3) }
+
+OmnTunnelLogState ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION
+        "Can hold one of the following values:
+         0 = off, 1 = error, 2 = warning, 3 = info or 4 = debug."
+    SYNTAX  INTEGER { off(0), error(1), warning(2), info(3), debug(4) }
+
+
+--
+-- Statistic Objects
+--
+
+
+omnTunnelNumDevices OBJECT-TYPE
+    SYNTAX      Gauge32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices currently connected."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 1 }
+
+omnTunnelNumDevicesPeak OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "High watermark of number of devices connected.
+         The is the greatest number of devices connected
+         since Tunnel Server process restarted."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 2 }
+
+omnTunnelNumConnections OBJECT-TYPE
+    SYNTAX      Gauge32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of connections currently connected to hosts."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 3 }
+
+omnTunnelNumConnectionsPeak OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "High watermark of number of connections to hosts.
+         This is the greatest number of outbound connections
+         to hosts since Tunnel Server process restarted."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 4 }
+
+omnTunnelDownstreamBitRate OBJECT-TYPE
+    SYNTAX      Unsigned32
+    UNITS       "kB/s"
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Downstream bitrate of all traffic."
+    ::= { omnTunnelServerStat 20 }
+
+omnTunnelUpstreamBitRate OBJECT-TYPE
+    SYNTAX      Unsigned32
+    UNITS       "kB/s"
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Upstream bitrate of all traffic."
+    ::= { omnTunnelServerStat 21 }
+
+omnTunnelNumProxies OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of proxies defined in traffic rules."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 40 }
+
+omnTunnelNumProxiesDown OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of proxies defined in traffic rules but
+         currently unreachable."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 41 }
+
+omnTunnelNumTrafficRules OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of traffic rules defined."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 50 }
+
+omnTunnelNumAllowListedDevices OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices in the allowlist."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 60 }
+
+omnTunnelNumClosedHandshakes OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of TLS handshakes closed before authenticated.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 70 }
+
+omnTunnelNumFailedHandshakes OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of TLS handshakes failed authentication.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 71 }
+
+omnTunnelNumNotInAllowlist OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices failed to connect due to not in allowlist.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 72 }
+
+omnTunnelNumNonCompliant OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices failed to connect due to non-compliant
+         status.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 73 }
+
+omnTunnelNumNotInAllowlist OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices failed to connect due to not in allowlist.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 72 }
+
+omnTunnelNumDevicesBlockedByAdm OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices blocked by admin in UEM Console.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 77 }
+
+omnTunnelLogLevel OBJECT-TYPE
+    SYNTAX      OmnTunnelLogState
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel Server log level."
+    ::= { omnTunnelServerInfo 80 }
+
+omnTunnelNumNonManaged OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices failed to connect due to non-managed
+         status.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 74 }
+
+omnTunnelNumDDoSRejected OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices rejected due to DDoS protection.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 75 }
+
+omnTunnelNumDevicesBlockedByZTNA OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices rejected due to ZTNA policy.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 76 }
+
+omnTunnelNumDevicesBlockedByAdm OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices blocked by admin in UEM Console.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 77 }
+    
+omnTunnelNumUnableConnectBackend OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices failed to connect due to front-end 
+         unable to connect to a back-end."
+    ::= { omnTunnelServerStat 78 }
+
+omnTunnelNumDevicesSinceStart OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of device connections since process restart.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 80 }
+
+omnTunnelNumDTLSSinceStart OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices using DTLS connection since process restart.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 81 }
+
+omnTunnelNumConnSuccessful OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of outbound connections successfully established.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 90 }
+
+omnTunnelNumConnFailed OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of outbound connections failed.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 91 }
+
+omnTunnelNumConnBlockedByZTNA OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of outbound connections blocked by ZTNA policy.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 92 }
+
+
+omnTunnelNumBackEnds OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "In Cascade Mode, the number of IP addresses
+         resolved from back-end hostname.
+
+         (Available on Cascade Mode front-ends only)"
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 100 }
+
+omnTunnelNumBackEndsDown OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "In Cascade Mode, the number of back-ends that are
+         unresponsive to health check pinging.
+
+         (Available on Cascade Mode front-ends only)"
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 101 }
+
+omnTunnelMemoryVirtual OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel service virtual memory size."
+
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 110 }
+
+omnTunnelMemoryResident OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel service resident memory size."
+
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 111 }
+
+omnTunnelMemoryShared OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel service shared memory size."
+
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 112 }
+
+omnTunnelNumMFASucceeded OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices succeeded in Multi-factor 
+         Authentication check."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 120 }
+
+omnTunnelNumMFAFailure OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices failed in Multi-factor 
+         Authentication check."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 121 }
+
+omnTunnelNumJWTFailure OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices failed due to JWT token validation
+         failure in Multi-factor Authentication check."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 122 }
+
+--
+-- Information Objects
+--
+
+
+omnTunnelServerVersion OBJECT-TYPE
+    SYNTAX      SnmpAdminString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel server version."
+    ::= { omnTunnelServerInfo 1 }
+
+omnTunnelConsoleVersion OBJECT-TYPE
+    SYNTAX      SnmpAdminString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Console server version."
+    ::= { omnTunnelServerInfo 2 }
+
+omnTunnelOperatingSystem OBJECT-TYPE
+    SYNTAX      SnmpAdminString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel server machine operating system."
+    ::= { omnTunnelServerInfo 3 }
+
+omnTunnelAPIConnectivity OBJECT-TYPE
+    SYNTAX      OmnTunnelUpDownState
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel server to Console API connectivity."
+    ::= { omnTunnelServerInfo 10 }
+
+omnTunnelServerStatus OBJECT-TYPE
+    SYNTAX      OmnTunnelUpDownState
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel Server up/down status."
+    ::= { omnTunnelServerInfo 90 }
+
+omnTunnelNumNonCompliant OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of devices failed to connect due to non-compliant
+         status.
+
+         Discontinuities in the value of this counter can occur at
+         re-initialization of the Tunnel Server process."
+    ::= { omnTunnelServerStat 73 }
+
+
+
+omnTunnelAWCMConnectivity OBJECT-TYPE
+    SYNTAX      OmnTunnelUpDownState
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel server to AWCM server connectivity."
+    ::= { omnTunnelServerInfo 11 }
+
+omnTunnelAPILastResponse OBJECT-TYPE
+    SYNTAX      SnmpAdminString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Last HTTP response from Console API.
+         Value can be any HTTP response codes such as
+         '200 OK', '401 Unauthorized' etc."
+    ::= { omnTunnelServerInfo 12 }
+
+omnTunnelAWCMLastResponse OBJECT-TYPE
+    SYNTAX      SnmpAdminString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Last HTTP response from AWCM server.
+         Value can be any HTTP response codes such as
+         '200 OK', '401 Unauthorized' etc."
+    ::= { omnTunnelServerInfo 13 }
+
+omnTunnelAPILastSyncTime OBJECT-TYPE
+    SYNTAX      DateAndTime
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "The date and time the last Console API configuration
+         was downloaded."
+    ::= { omnTunnelServerInfo 14 }
+
+omnTunnelAWCMLastSyncTime OBJECT-TYPE
+    SYNTAX      DateAndTime
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "The date and time the last AWCM message was received."
+    ::= { omnTunnelServerInfo 15 }
+
+omnTunnelProcessStartTime OBJECT-TYPE
+    SYNTAX      DateAndTime
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "The date and time the vpnserv process restarted."
+    ::= { omnTunnelServerInfo 20 }
+
+ omnTunnelProcessUpTime OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "The number of seconds passed since the vpnserv process
+         restarted"
+    ::= { omnTunnelServerInfo 21 }
+
+omnTunnelCascadeMode OBJECT-TYPE
+    SYNTAX      OmnTunnelCascadeModeState
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel Server cascade mode."
+    ::= { omnTunnelServerInfo 30 }
+
+omnTunnelDeploymentMode OBJECT-TYPE
+    SYNTAX      SnmpAdminString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel Server deployment mode."
+    ::= { omnTunnelServerInfo 40 }
+
+omnTunnelTrafficRulesEnabled OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel Server traffic rules mode."
+    ::= { omnTunnelServerInfo 50 }
+
+omnTunnelFIPSEnabled OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel Server FIPS mode."
+    ::= { omnTunnelServerInfo 60 }
+
+omnTunnelNSXEnabled OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel Server to NSX integration.
+
+         See here for more details:
+         https://techzone.vmware.com/sites/default/files/
+         vmware-tunnel-NSX-micro-segmentation-Integration.pdf"
+    ::= { omnTunnelServerInfo 70 }
+
+omnTunnelLogLevel OBJECT-TYPE
+    SYNTAX      OmnTunnelLogState
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel Server log level."
+    ::= { omnTunnelServerInfo 80 }
+
+
+omnTunnelServerStatus OBJECT-TYPE
+    SYNTAX      OmnTunnelUpDownState
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel Server up/down status."
+    ::= { omnTunnelServerInfo 90 }
+
+omnTunnelTLSPortSharing OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "UAG TLS port sharing status."
+    ::= { omnTunnelServerInfo 100 }
+
+omnTunnelZTNADTR OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "ZTNA Device Traffic Rules validation enabled."
+    ::= { omnTunnelServerInfo 110 }
+
+omnTunnelNumZTNADTR OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Number of ZTNA Device Traffic Rules in cache."
+    ::= { omnTunnelServerInfo 112 }
+
+omnTunnelIsAppliance OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel Server is running in appliance mode."
+    ::= { omnTunnelServerInfo 120 }
+
+omnTunnelIsContainer OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Tunnel Server is running in container mode."
+    ::= { omnTunnelServerInfo 130 }
+
+omnTunnelGeneveMetadata OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Metadata is provided in Geneve Tunnel Options."
+    ::= { omnTunnelServerInfo 140 }
+    
+omnTunnelConfigLocked OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Configuration lock is enabled by UAG."
+    ::= { omnTunnelServerInfo 150 }
+    
+omnTunnelMultiTunnelConfigName OBJECT-TYPE
+    SYNTAX      SnmpAdminString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Multi tunnel configuration name."
+    ::= { omnTunnelServerInfo 160 }    
+
+omnTunnelMFAMode OBJECT-TYPE
+    SYNTAX      SnmpAdminString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Multi-factor authentication mode."
+    ::= { omnTunnelServerInfo 170 }    
+
+omnTunnelIsJWT OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Multi-factor authentication JWT mode enabled."
+    ::= { omnTunnelServerInfo 180 }
+
+--
+-- Groups
+--
+
+
+omnTunnelServerMIBConformance OBJECT IDENTIFIER
+    ::= { omnTunnelServerMIB 3 }
+omnTunnelServerMIBCompliances OBJECT IDENTIFIER
+    ::= { omnTunnelServerMIBConformance 1 }
+omnTunnelServerMIBGroups      OBJECT IDENTIFIER
+    ::= { omnTunnelServerMIBConformance 2 }
+
+
+omnTunnelServerStatGroup OBJECT-GROUP
+    OBJECTS {
+        omnTunnelNumDevices,
+        omnTunnelNumDevicesPeak,
+        omnTunnelNumConnections,
+        omnTunnelNumConnectionsPeak,
+        omnTunnelDownstreamBitRate,
+        omnTunnelUpstreamBitRate,
+        omnTunnelNumProxies,
+        omnTunnelNumProxiesDown,
+        omnTunnelNumTrafficRules,
+        omnTunnelNumAllowListedDevices,
+        omnTunnelNumClosedHandshakes,
+        omnTunnelNumFailedHandshakes,
+        omnTunnelNumUnableConnectBackend,
+        omnTunnelNumDevicesSinceStart,
+        omnTunnelNumDTLSSinceStart
+    }
+    STATUS current
+    DESCRIPTION
+        "A collection of Omnissa Tunnel Server runtime values."
+    ::= { omnTunnelServerMIBGroups 1 }
+
+
+
+omnTunnelServerInfoGroup OBJECT-GROUP
+    OBJECTS {
+        omnTunnelServerVersion,
+        omnTunnelConsoleVersion,
+        omnTunnelOperatingSystem,
+        omnTunnelAPIConnectivity,
+        omnTunnelAWCMConnectivity,
+        omnTunnelAPILastResponse,
+        omnTunnelAWCMLastResponse,
+        omnTunnelAPILastSyncTime,
+        omnTunnelAWCMLastSyncTime,
+        omnTunnelProcessStartTime,
+        omnTunnelCascadeMode,
+        omnTunnelDeploymentMode,
+        omnTunnelTrafficRulesEnabled,
+        omnTunnelFIPSEnabled,
+        omnTunnelNSXEnabled
+    }
+    STATUS current
+    DESCRIPTION
+        "A collection of Omnissa Tunnel Server runtime information."
+    ::= { omnTunnelServerMIBGroups 2 }
+
+
+omnTunnelServerStatGroup2 OBJECT-GROUP
+    OBJECTS {
+        omnTunnelNumNotInAllowlist,
+        omnTunnelNumNonCompliant,
+        omnTunnelNumNonManaged
+    }
+    STATUS current
+    DESCRIPTION
+        "A collection of Omnissa Tunnel Server runtime values."
+    ::= { omnTunnelServerMIBGroups 3 }
+
+omnTunnelServerInfoGroup2 OBJECT-GROUP
+    OBJECTS {
+        omnTunnelLogLevel,
+        omnTunnelProcessUpTime,
+        omnTunnelServerStatus
+    }
+    STATUS current
+    DESCRIPTION
+        "A collection of Omnissa Tunnel Server runtime information."
+    ::= { omnTunnelServerMIBGroups 4 }
+
+
+omnTunnelServerStatGroup3 OBJECT-GROUP
+    OBJECTS {
+        omnTunnelNumDDoSRejected,
+        omnTunnelNumConnSuccessful,
+        omnTunnelNumConnFailed,
+        omnTunnelNumBackEnds,
+        omnTunnelNumBackEndsDown,
+        omnTunnelMemoryVirtual,
+        omnTunnelMemoryResident,
+        omnTunnelMemoryShared,
+        omnTunnelNumMFASucceeded,
+        omnTunnelNumMFAFailure,
+        omnTunnelNumJWTFailure
+    }
+    STATUS current
+    DESCRIPTION
+        "A collection of Omnissa Tunnel Server runtime values."
+    ::= { omnTunnelServerMIBGroups 5 }
+
+
+omnTunnelServerInfoGroup3 OBJECT-GROUP
+    OBJECTS {
+        omnTunnelTLSPortSharing,
+        omnTunnelZTNADTR,
+        omnTunnelNumZTNADTR,
+        omnTunnelIsAppliance,
+        omnTunnelIsContainer,
+        omnTunnelGeneveMetadata,
+        omnTunnelConfigLocked,
+        omnTunnelMultiTunnelConfigName,
+        omnTunnelMFAMode,
+        omnTunnelIsJWT
+    }
+    STATUS current
+    DESCRIPTION
+        "A collection of Omnissa Tunnel Server runtime information."
+    ::= { omnTunnelServerMIBGroups 6 }
+
+
+omnTunnelServerStatGroup4 OBJECT-GROUP
+    OBJECTS {
+        omnTunnelNumDevicesBlockedByZTNA,
+        omnTunnelNumDevicesBlockedByAdm,
+        omnTunnelNumConnBlockedByZTNA
+    }
+    STATUS current
+    DESCRIPTION
+        "A collection of Omnissa Tunnel Server runtime values."
+    ::= { omnTunnelServerMIBGroups 7 }
+
+
+--
+-- Compliance
+--
+
+
+omnTunnelServerMIBCompliance MODULE-COMPLIANCE
+    STATUS     current
+    DESCRIPTION
+        "The compliance statement for Omnissa Tunnel Server SNMP
+         interface."
+    MODULE
+        MANDATORY-GROUPS {
+        omnTunnelServerInfoGroup,
+        omnTunnelServerInfoGroup2,
+        omnTunnelServerInfoGroup3,
+        omnTunnelServerStatGroup,
+        omnTunnelServerStatGroup2,
+        omnTunnelServerStatGroup3,
+        omnTunnelServerStatGroup4 }
+
+    ::= { omnTunnelServerMIBCompliances 1 }
+
+
+END

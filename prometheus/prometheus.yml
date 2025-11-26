@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      # - alertmanager:9093
+
+# Scrape configurations
+scrape_configs:
+  - job_name: 'telegraf'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['telegraf:9273']
+        labels:
+          service: 'telegraf'

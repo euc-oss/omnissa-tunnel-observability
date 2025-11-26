@@ -1,0 +1,39 @@
+OMNISSA-PRODUCTS-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+   MODULE-IDENTITY
+        FROM SNMPv2-SMI
+   omnissaProductSpecific
+        FROM OMNISSA-ROOT-MIB;
+
+omnissaProducts MODULE-IDENTITY
+       LAST-UPDATED "202410300000Z"
+       ORGANIZATION "Omnissa, LLC"
+       CONTACT-INFO
+               "Omnissa, LLC
+                590 E Middlefield Road
+                Mountain View, CA 94043
+                Tel: 1-650-239-7600
+                Web: https://kb.omnissa.com/s/article/1013445
+               "
+       DESCRIPTION
+               "This MIB module provides the OID identifiers
+                which are returned from SNMPv2-MIB sysObjectId for
+                agents in specific Omnissa products.
+               "
+       REVISION      "202410300000Z"
+       DESCRIPTION
+               "The initial revision."
+       ::= { omnissaProductSpecific 11 }
+
+
+omnissaTunnelServer OBJECT IDENTIFIER
+    ::= { omnissaProductSpecific 250 }
+
+omnissaHorizonCloudConnector OBJECT IDENTIFIER
+    ::= { omnissaProductSpecific 350 }
+
+omnissaHorizonV2Titan OBJECT IDENTIFIER
+    ::= { omnissaProductSpecific 450 }
+
+END -- end of module OMNISSA-PRODUCTS-MIB.
