@@ -17,8 +17,6 @@ This repo can be used as a recommendation for guidance on setting up observabili
 * Deploy Linux VM 
     * Chose distribution of your choice, though Alma Linux is recommended for use. You can also choose to download [here](https://almalinux.org/get-almalinux/)
         * Resource recommendation of Linux VM 4 core 16GB 100 GB storage 
-        * Retention policy
-            * For Logs, 7 days of data is retained.
     * Ensure, docker and docker-compose is installed on Linux VM. Run `docker version` to confirm the same.
     * Start docker using `systemctl start docker`
     * Add the user `loki` using `useradd` command if you intent to make loki write logs on local store as the `/home/loki` directory would be volume mounted into the loki container.
