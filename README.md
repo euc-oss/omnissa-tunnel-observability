@@ -37,7 +37,7 @@ GRAFANA_PLUGINS=grafana-piechart-panel
  ```
  [[inputs.snmp]]
    # Define as "udp://<hostname_or_ip1>:161,udp://<hostname_or_ip2>:161,udp://<hostname_or_ip3>:161"
-   # Example: [ "udp://1.2.3.4:161", "udp://3.4.5.6:161" ]
+   # Example: agents = [ "udp://1.2.3.4:161", "udp://3.4.5.6:161" ]
    agents = [ "${SNMP_SERVERS}" ]
  ```
 * Run :
