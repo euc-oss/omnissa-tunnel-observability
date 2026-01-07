@@ -33,7 +33,7 @@ GRAFANA_PASSWORD=<GRAFANA PASSWORD>
 GRAFANA_PLUGINS_ENABLED=true
 GRAFANA_PLUGINS=grafana-piechart-panel
 ```
- * open [snmp.conf](./telegraf/snmp.conf) file and fill the below information
+ * open [snmp.conf](https://github.com/euc-oss/omnissa-tunnel-observability/blob/4df6942a9af5a4768136b6a83d6f6d3487381426/telegraf/snmp.conf#L5) file and fill the below information
  ```
  [[inputs.snmp]]
    # Define as "udp://<hostname_or_ip1>:161,udp://<hostname_or_ip2>:161,udp://<hostname_or_ip3>:161"
