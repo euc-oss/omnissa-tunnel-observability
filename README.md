@@ -8,7 +8,8 @@ This repo can be used as a recommendation for guidance on setting up observabili
 
 * Tunnel configured on UEM Console.Follow the existing steps to enable snmp(if using UAG).
 * Tunnel Server deployed through UAG or container
-* All connectivity should be working as expected.
+    * Tunnel Server container already exposes port 161 for snmp stats. Only snmp v2 is supported.
+* All connectivity should be working as expected and the Observability VM should be able to connect to Tunnel Server
 
 ### Telemetry
 
@@ -22,7 +23,7 @@ This repo can be used as a recommendation for guidance on setting up observabili
 * Clone the repo on Linux VM OR download to your local,zip the entire repo and transfer it to VM.
 * Login to VM
 * Go to directory where repo is cloned or unzip it if zipped.
-* open [.env](./.env) file in this directory and fill in the below information
+* open [.env](./.env) file in this directory and fill in the Linux VM IP field to the IP of your VM.
 ```
 TELEGRAF_HOST=<LINUX VM IP>
 
@@ -33,7 +34,7 @@ GRAFANA_PASSWORD=<GRAFANA PASSWORD>
 GRAFANA_PLUGINS_ENABLED=true
 GRAFANA_PLUGINS=grafana-piechart-panel
 ```
- * open [snmp.conf](https://github.com/euc-oss/omnissa-tunnel-observability/blob/4df6942a9af5a4768136b6a83d6f6d3487381426/telegraf/snmp.conf#L5) file and fill the below information
+ * open [snmp.conf](https://github.com/euc-oss/omnissa-tunnel-observability/blob/4df6942a9af5a4768136b6a83d6f6d3487381426/telegraf/snmp.conf#L5) file and fill the Tunnel Server IPs to pull stats from.
  ```
  [[inputs.snmp]]
    # Define as "udp://<hostname_or_ip1>:161,udp://<hostname_or_ip2>:161,udp://<hostname_or_ip3>:161"
@@ -49,12 +50,6 @@ setup.sh with:
 
 * Open any browser on your local OR any machine which has connectivity to the Linux VM and type `http://<linux-vm-ip>:3000` 
     * You can view the telemetry here and a default dashboard.
-
-#### Configuration (for Telemetry)
-
-* Tunnel Server container already exposes port 161 for snmp stats.
-* Only snmp v2 is supported.
-* Update SNMP section in [snmp.conf](./telegraf/snmp.conf) to supply Tunnel Server IPs in the format `udp://<hostname_or_ip1>:161` for Observability stack to pull the snmp stats.
 
 ### Tests
 
