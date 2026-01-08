@@ -41,7 +41,6 @@
   ## If set to true, do no set the "host" tag in the telegraf agent.
   omit_hostname = false
 
-
 ###############################################################################
 #                            OUTPUT PLUGINS                                   #
 ###############################################################################
@@ -74,7 +73,7 @@
 
   ## Collectors to enable, valid entries are "gocollector" and "process".
   ## If unset, both are enabled.
-  # collectors_exclude = ["gocollector", "process"]
+  collectors_exclude = ["gocollector", "process"]
 
   ## Send string metrics as Prometheus labels.
   ## Unless set to false all string metrics will be sent as labels.
