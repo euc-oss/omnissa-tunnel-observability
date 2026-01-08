@@ -38,7 +38,7 @@ GRAFANA_PLUGINS=grafana-piechart-panel
  [[inputs.snmp]]
    # Define as "udp://<hostname_or_ip1>:161,udp://<hostname_or_ip2>:161,udp://<hostname_or_ip3>:161"
    # Example: agents = [ "udp://1.2.3.4:161", "udp://3.4.5.6:161" ]
-   agents = [ "${SNMP_SERVERS}" ]
+   agents = [ "udp://<Tunnel_Server_1>:161", "udp://<Tunnel_Server_2>:161", ... ]
  ```
 * Run :
 ```
@@ -54,7 +54,7 @@ setup.sh with:
 
 * Tunnel Server container already exposes port 161 for snmp stats.
 * Only snmp v2 is supported.
-* Update `SNMP_SERVERS` section in [snmp.conf](./telegraf/snmp.conf) to supply Tunnel Server IPs in the format `udp://<hostname_or_ip1>:161` for Observability stack to pull the snmp stats.
+* Update SNMP section in [snmp.conf](./telegraf/snmp.conf) to supply Tunnel Server IPs in the format `udp://<hostname_or_ip1>:161` for Observability stack to pull the snmp stats.
 
 ### Tests
 
