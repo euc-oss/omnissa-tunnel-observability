@@ -44,10 +44,12 @@ services:
         links:
             - prometheus
         volumes:
-            - /var/lib/grafana
-            - /var/log/grafana
-            - /var/lib/grafana/plugins
+            - grafana_data:/var/lib/grafana
+            - grafana_logs:/var/log/grafana
+            - grafana_plugins:/var/lib/grafana/plugins
             - ./grafana/provisioning/datasources/tunnel/:/etc/grafana/provisioning/datasources/:ro
+            - ./grafana/provisioning/dashboard/:/opt/grafana/dashboards/:rw
+            - ./grafana/provisioning/alerting/:/etc/grafana/provisioning/alerting/:rw
         restart: always
         env_file:
             - .env
@@ -55,3 +57,7 @@ services:
             shared: null
 networks:
     shared: {}
+volumes:
+    grafana_data:
+    grafana_logs:
+    grafana_plugins:
