@@ -2,6 +2,10 @@
 
 This repo can be used as a recommendation for guidance on setting up observability for tunnel server.
 
+## Architecture
+
+![Tunnel Observability Architecture](./arch/TunnelObservability.png)
+
 ## Tunnel Server
 
 ### Pre-reqs
