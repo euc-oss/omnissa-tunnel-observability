@@ -54,6 +54,7 @@ setup.sh with:
 
 * Open any browser on your local OR any machine which has connectivity to the Linux VM and type `http://<linux-vm-ip>:3000` 
     * You can view the telemetry here and a default dashboard.
+    * If customer have their own Grafana Instance, they can import the dashboard from [exported-dashboards](./exported-dashboards) and manage the dashboard themselves.
 
 ### Tests
 
