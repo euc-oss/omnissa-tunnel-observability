@@ -55,6 +55,38 @@ services:
             - .env
         networks:
             shared: null
+    loki:
+      command: -config.file=/etc/loki/loki-config.yml
+      container_name: loki
+      image: grafana/loki:3.0.0
+      networks:
+        shared: null
+      ports:
+      - protocol: tcp
+        published: 3100
+        target: 3100
+      restart: always
+      volumes:
+      - ./loki/loki-config-filesystem.yml:/etc/loki/loki-config.yml:ro
+      - /home/loki/:/home/loki/
+    alloy:
+      command: run --stability.level=experimental /etc/alloy/config.alloy
+      container_name: alloy
+      image: grafana/alloy:latest
+      depends_on:
+      - loki
+      networks:
+        shared: null
+      ports:
+      - protocol: tcp
+        published: 514
+        target: 514
+      - protocol: udp
+        published: 514
+        target: 514
+      restart: always
+      volumes:
+      - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
 networks:
     shared: {}
 volumes:

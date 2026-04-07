@@ -6,6 +6,14 @@ if [ $# -ne 1 ]; then
      clean: clean up all containers"
    exit 1
 fi
+
+# Ensure Loki data directories exist and are owned by UID 10001
+# (the user Loki runs as inside its container)
+mkdir -p /home/loki/wal /home/loki/tsdb-index /home/loki/tsdb-cache \
+         /home/loki/chunks /home/loki/shipper-compactor \
+         /home/loki/rules /home/loki/rules-temp
+chown -R 10001:10001 /home/loki
+
 case "$1" in
   "tunall")
        docker compose -f docker-compose.yml up --build --force-recreate -d; shift;;
