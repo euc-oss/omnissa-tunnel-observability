@@ -56,7 +56,7 @@
             "uid": "P8E80F9AEF21F6940"
           },
           "editorMode": "builder",
-          "expr": "{job=\"syslog\"}",
+          "expr": "{job=\"syslog\", msg_type=~\"$msg_type\"}",
           "hide": false,
           "queryType": "range",
           "refId": "A"
@@ -1133,6 +1133,39 @@
         },
         "refresh": 1,
         "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "loki",
+          "uid": "P8E80F9AEF21F6940"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "name": "msg_type",
+        "label": "Message Type",
+        "options": [],
+        "query": {
+          "label": "msg_type",
+          "refId": "LokiVariableQueryEditor-VariableQuery",
+          "stream": "{job=\"syslog\"}",
+          "type": 1
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
         "type": "query"
       }
     ]
