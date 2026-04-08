@@ -4,7 +4,7 @@
 // Use raw syslog format to accept the message as-is, then parse the JSON body.
 
 logging {
-  level  = "debug"
+  level  = "warn"
   format = "logfmt"
 }
 
@@ -27,9 +27,12 @@ loki.source.syslog "syslog" {
 }
 
 loki.process "parse_ws1" {
-  // Strip the leading syslog PRI (e.g. "<14>") to expose the raw JSON body.
+  // WS1 sends two formats:
+  //   auditlog:   <PRI>{"time":...}           (no @cee prefix)
+  //   accesslog:  <PRI> @cee: {"time":...}    (space + @cee prefix)
+  // PRI and @cee prefix are both optional. \s* handles any spacing between them.
   stage.regex {
-    expression = `^<\d+>(?P<message>\{.+\})\s*$`
+    expression = `^(?:<\d+>)?\s*(?:@cee:\s*)?(?P<message>\{.+\})\s*$`
   }
 
   stage.output {
@@ -37,30 +40,53 @@ loki.process "parse_ws1" {
   }
 
   // Extract fields from the JSON body.
+  // auditlog fields:  category, audit_type, msg_type, server_ip
+  // accesslog fields: event_type, status, msg_type, server_ip, device_name, user_name, port_number, device_app
+  // alertlog fields:  sub_type, type, msg_type, server_ip, device_name, user_name, hostname, port_number
   stage.json {
     expressions = {
-      time       = "time",
-      category   = "category",
-      msg_type   = "msg_type",
-      audit_type = "audit_type",
-      server_ip  = "server_ip",
+      time             = "time",
+      category         = "category",
+      msg_type         = "msg_type",
+      audit_type       = "audit_type",
+      event_type       = "event_type",
+      sub_type         = "sub_type",
+      status           = "status",
+      server_ip        = "server_ip",
+      device_name      = "device_name",
+      hostname         = "hostname",
+      remote_host_name = "remote_host_name",
+      user_name        = "user_name",
+      port_number      = "port_number",
+      device_app       = "device_app",
     }
   }
 
   // Promote extracted fields to Loki labels.
   stage.labels {
     values = {
-      category   = "",
-      msg_type   = "",
-      audit_type = "",
-      server_ip  = "",
+      category         = "",
+      msg_type         = "",
+      audit_type       = "",
+      event_type       = "",
+      sub_type         = "",
+      status           = "",
+      server_ip        = "",
+      device_name      = "",
+      hostname         = "",
+      remote_host_name = "",
+      user_name        = "",
+      port_number      = "",
+      device_app       = "",
     }
   }
 
   // Use the timestamp embedded in the JSON payload.
+  // fallback_formats handles milliseconds variant (accesslog uses .524+0800).
   stage.timestamp {
-    source = "time"
-    format = "2006-01-02T15:04:05Z0700"
+    source           = "time"
+    format           = "2006-01-02T15:04:05Z0700"
+    fallback_formats = ["2006-01-02T15:04:05.999999999Z0700"]
   }
 
   forward_to = [loki.write.loki_push.receiver]
