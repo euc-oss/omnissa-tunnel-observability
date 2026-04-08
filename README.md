@@ -65,6 +65,11 @@ Tunnel Server sends logs via syslog to Grafana Alloy, which parses and forwards 
 
 * Configure the syslog destination (Linux VM IP) on the UEM Console. The syslog listener runs on **port 514** (TCP and UDP).
 * For application (tunnel server) logs, additional KVP settings can be configured. Starting Tunnel Server version 26.03, use the below KVP to redirect tunnel application and reporter logs to syslog.
+  alert_log_mode 1
+  alert_log_rsyslog_host udp://192.168.1.1:514
+  audit_log_mode 1
+  audit_log_rsyslog_host udp://192.168.124.141:514
+
 * Alloy parses three log message types from Tunnel Server:
 
 | `msg_type` | Description | Key fields |
