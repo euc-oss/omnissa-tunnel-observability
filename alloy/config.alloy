@@ -53,7 +53,6 @@ loki.process "parse_ws1" {
       sub_type         = "sub_type",
       status           = "status",
       server_ip        = "server_ip",
-      device_name      = "device_name",
       hostname         = "hostname",
       remote_host_name = "remote_host_name",
       user_name        = "user_name",
@@ -72,7 +71,6 @@ loki.process "parse_ws1" {
       sub_type         = "",
       status           = "",
       server_ip        = "",
-      device_name      = "",
       hostname         = "",
       remote_host_name = "",
       user_name        = "",
@@ -87,6 +85,12 @@ loki.process "parse_ws1" {
     source           = "time"
     format           = "2006-01-02T15:04:05Z0700"
     fallback_formats = ["2006-01-02T15:04:05.999999999Z0700"]
+  }
+
+  // Drop the explicit job label — service_name="syslog" is already set by Alloy from the job value.
+  // Drop device_name as it is not needed for log querying.
+  stage.label_drop {
+    values = ["job", "device_name"]
   }
 
   forward_to = [loki.write.loki_push.receiver]
