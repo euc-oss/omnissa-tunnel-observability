@@ -692,7 +692,7 @@ omnTunnelIPSubnet OBJECT-TYPE
         "L3 VPN or Unique IP subnet range."
     ::= { omnTunnelServerInfo 190 }
 
-omnShiftStatusEnforced OBJECT-TYPE
+omnTunnelShiftStatusEnforced OBJECT-TYPE
     SYNTAX      TruthValue
     MAX-ACCESS  read-only
     STATUS      current
@@ -820,7 +820,7 @@ omnTunnelServerInfoGroup3 OBJECT-GROUP
         omnTunnelMFAMode,
         omnTunnelIsJWT,
         omnTunnelIPSubnet,
-        omnShiftStatusEnforced
+        omnTunnelShiftStatusEnforced
     }
     STATUS current
     DESCRIPTION

@@ -13,13 +13,13 @@ loki.source.syslog "syslog" {
     address       = "0.0.0.0:514"
     protocol      = "tcp"
     idle_timeout  = "60s"
-    labels        = { job = "syslog" }
+    labels        = { job = "syslog", service_name = "syslog" }
     syslog_format = "raw"
   }
   listener {
     address       = "0.0.0.0:514"
     protocol      = "udp"
-    labels        = { job = "syslog" }
+    labels        = { job = "syslog", service_name = "syslog" }
     syslog_format = "raw"
   }
 
