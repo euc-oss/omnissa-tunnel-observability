@@ -59,7 +59,7 @@
         "showLabels": true,
         "showTime": true,
         "sortOrder": "Ascending",
-        "wrapLogMessage": true
+        "wrapLogMessage": false
       },
       "pluginVersion": "12.1.10",
       "targets": [
@@ -2040,7 +2040,7 @@
         },
         "definition": "label_values(agent_host)",
         "includeAll": true,
-        "label": "TunnelServer",
+        "label": "Tunnel Server",
         "name": "agent_host",
         "options": [],
         "query": {
