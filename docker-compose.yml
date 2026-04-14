@@ -58,7 +58,7 @@ services:
     loki:
       command: -config.file=/etc/loki/loki-config.yml
       container_name: loki
-      image: grafana/loki:3.0.0
+      image: grafana/loki:latest
       networks:
         shared: null
       ports:
