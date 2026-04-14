@@ -19,7 +19,7 @@ IMPORTS
 
 
 omnTunnelServerMIB MODULE-IDENTITY
-    LAST-UPDATED "202604080000Z"
+    LAST-UPDATED "202604140000Z"
     ORGANIZATION "Omnissa, LLC"
     CONTACT-INFO
         "Omnissa, LLC
@@ -39,6 +39,10 @@ omnTunnelServerMIB MODULE-IDENTITY
         the latest documentation of Omnissa Workspace ONE UEM:
         https://docs.omnissa.com/category/Workspace_ONE_UEM
         "
+
+    REVISION     "202604140000Z"
+    DESCRIPTION
+        "Added disk total, used, and percentage OIDs."
 
     REVISION     "202604080000Z"
     DESCRIPTION
@@ -444,6 +448,31 @@ omnTunnelContainerCPU OBJECT-TYPE
     DEFVAL { 0 }
     ::= { omnTunnelServerStat 131 }
 
+omnTunnelDiskTotal OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Total disk space on the root filesystem in bytes."
+    ::= { omnTunnelServerStat 140 }
+
+omnTunnelDiskUsed OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Used disk space on the root filesystem in bytes."
+    ::= { omnTunnelServerStat 141 }
+
+omnTunnelDiskPercentage OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Disk usage percentage on the root filesystem."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 142 }
+
 --
 -- Information Objects
 --
@@ -840,6 +869,18 @@ omnTunnelServerStatGroup4 OBJECT-GROUP
     ::= { omnTunnelServerMIBGroups 7 }
 
 
+omnTunnelServerStatGroup5 OBJECT-GROUP
+    OBJECTS {
+        omnTunnelDiskTotal,
+        omnTunnelDiskUsed,
+        omnTunnelDiskPercentage
+    }
+    STATUS current
+    DESCRIPTION
+        "A collection of Omnissa Tunnel Server disk usage values."
+    ::= { omnTunnelServerMIBGroups 8 }
+
+
 --
 -- Compliance
 --
@@ -858,7 +899,8 @@ omnTunnelServerMIBCompliance MODULE-COMPLIANCE
         omnTunnelServerStatGroup,
         omnTunnelServerStatGroup2,
         omnTunnelServerStatGroup3,
-        omnTunnelServerStatGroup4 }
+        omnTunnelServerStatGroup4,
+        omnTunnelServerStatGroup5 }
 
     ::= { omnTunnelServerMIBCompliances 1 }
 

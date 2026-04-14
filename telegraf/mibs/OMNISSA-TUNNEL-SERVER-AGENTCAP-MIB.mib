@@ -14,7 +14,7 @@ IMPORTS
 
 
 omnTunnelServerAgentCapMIB MODULE-IDENTITY
-    LAST-UPDATED "202604080000Z"
+    LAST-UPDATED "202604140000Z"
     ORGANIZATION "Omnissa, LLC"
     CONTACT-INFO
         "Omnissa, LLC
@@ -26,6 +26,10 @@ omnTunnelServerAgentCapMIB MODULE-IDENTITY
     DESCRIPTION
         "This module defines agent capabilities for deployed
          Omnissa Workspace ONE Tunnel Server by release."
+
+    REVISION     "202604140000Z"
+    DESCRIPTION
+        "Added disk total, used, and percentage OIDs."
 
     REVISION     "202604080000Z"
     DESCRIPTION
@@ -60,7 +64,7 @@ omnTunnelServer2026-060000 AGENT-CAPABILITIES
         "
     REFERENCE
         "https://www.omnissa.com/products/#workspace-one"
-    SUPPORTS OMN-TUNNEL-SERVER-MIB    -- REVISION 202604080000Z
+    SUPPORTS OMN-TUNNEL-SERVER-MIB    -- REVISION 202604140000Z
 
     INCLUDES {
         omnTunnelServerInfoGroup,
@@ -69,7 +73,8 @@ omnTunnelServer2026-060000 AGENT-CAPABILITIES
         omnTunnelServerStatGroup,
         omnTunnelServerStatGroup2,
         omnTunnelServerStatGroup3,
-        omnTunnelServerStatGroup4
+        omnTunnelServerStatGroup4,
+        omnTunnelServerStatGroup5
     }
     ::= { omnTunnelServerCapability 4 }
 END
