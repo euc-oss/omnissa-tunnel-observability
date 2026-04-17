@@ -19,14 +19,14 @@ IMPORTS
 
 
 omnTunnelServerMIB MODULE-IDENTITY
-    LAST-UPDATED "202412010000Z"
+    LAST-UPDATED "202604140000Z"
     ORGANIZATION "Omnissa, LLC"
     CONTACT-INFO
         "Omnissa, LLC
         590 E Middlefield Road
         Mountain View, CA 94043
         Tel: 1-650-239-7600
-        Web: https://kb.omnissa.com/s/article/1013445
+        Web: https://kb.omnissa.com/s/article/6000665
         "
     DESCRIPTION
         "This MIB file contains the definition of the SNMP
@@ -39,6 +39,15 @@ omnTunnelServerMIB MODULE-IDENTITY
         the latest documentation of Omnissa Workspace ONE UEM:
         https://docs.omnissa.com/category/Workspace_ONE_UEM
         "
+
+    REVISION     "202604140000Z"
+    DESCRIPTION
+        "Added disk total, used, and percentage OIDs."
+
+    REVISION     "202604080000Z"
+    DESCRIPTION
+        "Added Host, Container CPU usage.
+         Added IPv4 subnet info and SBAC info."
 
     REVISION     "202412010000Z"
     DESCRIPTION
@@ -226,36 +235,6 @@ omnTunnelNumNonCompliant OBJECT-TYPE
          Discontinuities in the value of this counter can occur at
          re-initialization of the Tunnel Server process."
     ::= { omnTunnelServerStat 73 }
-
-omnTunnelNumNotInAllowlist OBJECT-TYPE
-    SYNTAX      Counter64
-    MAX-ACCESS  read-only
-    STATUS      current
-    DESCRIPTION
-        "Number of devices failed to connect due to not in allowlist.
-
-         Discontinuities in the value of this counter can occur at
-         re-initialization of the Tunnel Server process."
-    ::= { omnTunnelServerStat 72 }
-
-omnTunnelNumDevicesBlockedByAdm OBJECT-TYPE
-    SYNTAX      Counter64
-    MAX-ACCESS  read-only
-    STATUS      current
-    DESCRIPTION
-        "Number of devices blocked by admin in UEM Console.
-
-         Discontinuities in the value of this counter can occur at
-         re-initialization of the Tunnel Server process."
-    ::= { omnTunnelServerStat 77 }
-
-omnTunnelLogLevel OBJECT-TYPE
-    SYNTAX      OmnTunnelLogState
-    MAX-ACCESS  read-only
-    STATUS      current
-    DESCRIPTION
-        "Tunnel Server log level."
-    ::= { omnTunnelServerInfo 80 }
 
 omnTunnelNumNonManaged OBJECT-TYPE
     SYNTAX      Counter64
@@ -451,6 +430,49 @@ omnTunnelNumJWTFailure OBJECT-TYPE
     DEFVAL { 0 }
     ::= { omnTunnelServerStat 122 }
 
+omnTunnelHostCPU OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "VM or container host CPU usage percentage."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 130 }
+
+omnTunnelContainerCPU OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Container specific CPU usage percentage."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 131 }
+
+omnTunnelDiskTotal OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Total disk space on the root filesystem in bytes."
+    ::= { omnTunnelServerStat 140 }
+
+omnTunnelDiskUsed OBJECT-TYPE
+    SYNTAX      Counter64
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Used disk space on the root filesystem in bytes."
+    ::= { omnTunnelServerStat 141 }
+
+omnTunnelDiskPercentage OBJECT-TYPE
+    SYNTAX      Unsigned32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Disk usage percentage on the root filesystem."
+    DEFVAL { 0 }
+    ::= { omnTunnelServerStat 142 }
+
 --
 -- Information Objects
 --
@@ -487,28 +509,6 @@ omnTunnelAPIConnectivity OBJECT-TYPE
     DESCRIPTION
         "Tunnel server to Console API connectivity."
     ::= { omnTunnelServerInfo 10 }
-
-omnTunnelServerStatus OBJECT-TYPE
-    SYNTAX      OmnTunnelUpDownState
-    MAX-ACCESS  read-only
-    STATUS      current
-    DESCRIPTION
-        "Tunnel Server up/down status."
-    ::= { omnTunnelServerInfo 90 }
-
-omnTunnelNumNonCompliant OBJECT-TYPE
-    SYNTAX      Counter64
-    MAX-ACCESS  read-only
-    STATUS      current
-    DESCRIPTION
-        "Number of devices failed to connect due to non-compliant
-         status.
-
-         Discontinuities in the value of this counter can occur at
-         re-initialization of the Tunnel Server process."
-    ::= { omnTunnelServerStat 73 }
-
-
 
 omnTunnelAWCMConnectivity OBJECT-TYPE
     SYNTAX      OmnTunnelUpDownState
@@ -713,6 +713,22 @@ omnTunnelIsJWT OBJECT-TYPE
         "Multi-factor authentication JWT mode enabled."
     ::= { omnTunnelServerInfo 180 }
 
+omnTunnelIPSubnet OBJECT-TYPE
+    SYNTAX      SnmpAdminString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "L3 VPN or Unique IP subnet range."
+    ::= { omnTunnelServerInfo 190 }
+
+omnTunnelShiftStatusEnforced OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Shift based Access Control enabled."
+    ::= { omnTunnelServerInfo 200 }
+
 --
 -- Groups
 --
@@ -810,7 +826,9 @@ omnTunnelServerStatGroup3 OBJECT-GROUP
         omnTunnelMemoryShared,
         omnTunnelNumMFASucceeded,
         omnTunnelNumMFAFailure,
-        omnTunnelNumJWTFailure
+        omnTunnelNumJWTFailure,
+        omnTunnelHostCPU,
+        omnTunnelContainerCPU
     }
     STATUS current
     DESCRIPTION
@@ -829,7 +847,9 @@ omnTunnelServerInfoGroup3 OBJECT-GROUP
         omnTunnelConfigLocked,
         omnTunnelMultiTunnelConfigName,
         omnTunnelMFAMode,
-        omnTunnelIsJWT
+        omnTunnelIsJWT,
+        omnTunnelIPSubnet,
+        omnTunnelShiftStatusEnforced
     }
     STATUS current
     DESCRIPTION
@@ -847,6 +867,18 @@ omnTunnelServerStatGroup4 OBJECT-GROUP
     DESCRIPTION
         "A collection of Omnissa Tunnel Server runtime values."
     ::= { omnTunnelServerMIBGroups 7 }
+
+
+omnTunnelServerStatGroup5 OBJECT-GROUP
+    OBJECTS {
+        omnTunnelDiskTotal,
+        omnTunnelDiskUsed,
+        omnTunnelDiskPercentage
+    }
+    STATUS current
+    DESCRIPTION
+        "A collection of Omnissa Tunnel Server disk usage values."
+    ::= { omnTunnelServerMIBGroups 8 }
 
 
 --
@@ -867,7 +899,8 @@ omnTunnelServerMIBCompliance MODULE-COMPLIANCE
         omnTunnelServerStatGroup,
         omnTunnelServerStatGroup2,
         omnTunnelServerStatGroup3,
-        omnTunnelServerStatGroup4 }
+        omnTunnelServerStatGroup4,
+        omnTunnelServerStatGroup5 }
 
     ::= { omnTunnelServerMIBCompliances 1 }
 

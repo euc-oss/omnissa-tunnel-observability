@@ -14,18 +14,27 @@ IMPORTS
 
 
 omnTunnelServerAgentCapMIB MODULE-IDENTITY
-    LAST-UPDATED "202412010000Z"
+    LAST-UPDATED "202604140000Z"
     ORGANIZATION "Omnissa, LLC"
     CONTACT-INFO
         "Omnissa, LLC
         590 E Middlefield Road
         Mountain View, CA 94043
         Tel: 1-650-239-7600
-        Web: https://kb.omnissa.com/s/article/1013445
+        Web: https://kb.omnissa.com/s/article/6000665
         "
     DESCRIPTION
         "This module defines agent capabilities for deployed
          Omnissa Workspace ONE Tunnel Server by release."
+
+    REVISION     "202604140000Z"
+    DESCRIPTION
+        "Added disk total, used, and percentage OIDs."
+
+    REVISION     "202604080000Z"
+    DESCRIPTION
+        "Added Host, Container CPU usage.
+         Added IPv4 subnet info and SBAC info."
 
     REVISION     "202412010000Z"
     DESCRIPTION
@@ -41,21 +50,21 @@ omnTunnelServerCapability OBJECT IDENTIFIER ::=
 
 
 --
--- Applies to 22.12.00 Release
+-- Applies to 26.06.00 Release
 --
 
 
-omnTunnelServer2024-241200 AGENT-CAPABILITIES
+omnTunnelServer2026-060000 AGENT-CAPABILITIES
     PRODUCT-RELEASE
-        "24.12.00"
+        "26.06.00"
     STATUS  current
     DESCRIPTION
-        "Release 24.12.00 for Omnissa Workspace ONE Tunnel Server
+        "Release 26.06.00 for Omnissa Workspace ONE Tunnel Server
          supporting tunnel statistic and information queries.
         "
     REFERENCE
         "https://www.omnissa.com/products/#workspace-one"
-    SUPPORTS OMN-TUNNEL-SERVER-MIB    -- REVISION 202410300000Z
+    SUPPORTS OMN-TUNNEL-SERVER-MIB    -- REVISION 202604140000Z
 
     INCLUDES {
         omnTunnelServerInfoGroup,
@@ -64,7 +73,8 @@ omnTunnelServer2024-241200 AGENT-CAPABILITIES
         omnTunnelServerStatGroup,
         omnTunnelServerStatGroup2,
         omnTunnelServerStatGroup3,
-        omnTunnelServerStatGroup4
+        omnTunnelServerStatGroup4,
+        omnTunnelServerStatGroup5
     }
     ::= { omnTunnelServerCapability 4 }
 END
