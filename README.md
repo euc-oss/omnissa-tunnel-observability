@@ -89,4 +89,6 @@ Tunnel Server sends logs via syslog to Grafana Alloy, which parses and forwards 
 1. Enroll a device and try accessing any tunnelled resource.
 2. You should start seeing stats and logs at `http://<linux-vm-ip>:3000`.
 
+
+![Tunnel Logs](./docs/grafana2.png)
 ![Tunnel Stats](./docs/grafana.png)
